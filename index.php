@@ -15,19 +15,21 @@ if (isset($_POST['submit1'])) {
 
     $classid = $_POST['txt_classid'];
     $classname = $_POST['txt_class'];
-    $ins_sql = " INSERT INTO class(class_id,class_name)  VALUES ('$classid','$classname')";
+    $ins_sql = " INSERT INTO class(class_id,class_name)  
+  VALUES ('$classid','$classname')";
     $ins_sql_pre = $db->prepare($ins_sql);
     $ins_sql_pre->execute();
 }
 
 if (isset($_POST['submit2'])) {
-    
+
     $classid = $_POST['classid'];
     $stud_id = $_POST['studid'];
     $stud_name = $_POST['stud_name'];
     $stud_family = $_POST['stud_family'];
     $stud_ave = $_POST['stud_ave'];
-    $ins_sql = "INSERT INTO student(stud_id,class_id,name,family,ave)  VALUES ($stud_id,'$classid','$stud_name','$stud_family','$stud_ave')";
+    $ins_sql = "INSERT INTO student(stud_id,class_id,name,family,ave) 
+ VALUES ($stud_id,$classid,$stud_name,$stud_family,$stud_ave)";
     $ins_sql_pre = $db->prepare($ins_sql);
     $ins_sql_pre->execute();
 }
@@ -135,5 +137,67 @@ if (isset($_POST['submit2'])) {
         </div>
     </div>
 </div>
+
+<div id="show_list">
+    <form method="post">
+        <label>class name</label><br/>
+        <select name="select1" id="select1">
+            <?php
+            include "connection.php";
+            $sql_option = " SELECT * FROM class";
+            $sql_option_pre = $db->prepare($sql_option);
+            $sql_option_pre->execute();
+            while ($rows = $sql_option_pre->fetch(PDO::FETCH_ASSOC)) {
+                echo "<option value='" . $rows['class_id'] . "'>" . $rows['class_name'] . "</option>";
+            }
+            ?>
+        </select>
+
+        <input type="submit" name="sub" value="select">
+
+    </form>
+    <table>
+
+        <tr>
+
+            <td> name</td>
+            <td> family</td>
+            <td> ave</td>
+
+        </tr>
+
+        <?php
+        include "connection.php";
+
+        if (isset($_POST['sub'])) {
+
+            echo "<script>alert('ok');</script>";
+            $id = $_POST['select1'];
+            $sql_show = "select * FROM student WHERE class_id=" . $id;
+            $sql_show_pre = $db->prepare($sql_show);
+            $sql_show_pre->execute();
+            while ($row = $sql_show_pre->fetch(PDO::FETCH_ASSOC)) {
+
+                echo '
+                 <tr>
+                 
+     <td>' . $row['name'] . '</td>
+     
+      <td>' . $row['family'] . '</td>
+      
+    <td>' . $row['ave'] . '</td>
+    
+    </tr>
+                ';
+
+            }
+        }
+        ?>
+    </table>
+</div>
+</body>
+</html>
+
+
 </body>
 </html>
